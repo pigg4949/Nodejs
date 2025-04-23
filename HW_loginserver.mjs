@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 // 로그인 요청 처리: 결과 페이지 렌더링
 app.get("/login", (req, res) => {
   const { userid, userpw } = req.query;
-  res.render("HW_result.ejs", { userid, userpw });
+  res.render("HW_result", { userid, userpw });
 });
 
 // 서버 실행

@@ -17,8 +17,7 @@
 document.getElementById("loginBtn").addEventListener("click", () => {
         const userid = document.getElementById("userid").value;
         const userpw = document.getElementById("userpw").value;
-        const baseurl = 'https://port-0-nodejs-m9sj0laf43b26348.sel4.cloudtype.app/'
-        fetch(`${baseurl}/login?userid=${userid}&userpw=${userpw}`)
+        fetch(`/login?userid=${userid}&userpw=${userpw}`)
           .then((res) => res.text())
           .then((data) => {
             document.open();
