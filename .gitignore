@@ -1,0 +1,10 @@
+# node_modules 폴더 무시하는 법
+node_modules/
+
+# 텍스트 파일 무시하는 법
+*.txt
+
+# gitignore 파일무시
+# .gitignore
+
+memo/
