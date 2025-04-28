@@ -13,8 +13,8 @@
       <button id="loginBtn">로그인</button>
     </p>
 
-<script>
-document.getElementById("loginBtn").addEventListener("click", () => {
+    <script>
+      document.getElementById("loginBtn").addEventListener("click", () => {
         const userid = document.getElementById("userid").value;
         const userpw = document.getElementById("userpw").value;
         fetch(`/login?userid=${userid}&userpw=${userpw}`)
@@ -28,7 +28,6 @@ document.getElementById("loginBtn").addEventListener("click", () => {
             console.error("에러 발생!", err);
           });
       });
-</script>
     </script>
   </body>
 </html>
