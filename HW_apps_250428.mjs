@@ -23,6 +23,7 @@ app.use((req, res, next) => {
   res.sendStatus(404);
 });
 
-app.listen(config.host.port, () => {
-  console.log("서버 실행중");
+const PORT = process.env.PORT || config.host.port;
+app.listen(PORT, () => {
+  console.log(`서버 실행 중: ${PORT} 포트`);
 });

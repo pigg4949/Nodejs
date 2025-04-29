@@ -1,6 +1,7 @@
 {
   "name": "nodejs",
   "version": "1.0.0",
+  "type": "module",
   "main": "HW_apps_250428.mjs",
   "scripts": {
     "start": "node HW_apps_250428.mjs",
