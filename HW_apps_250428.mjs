@@ -7,6 +7,14 @@ import { fileURLToPath } from "url";
 
 const app = express();
 
+// CORS 허용 설정
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 // ESM 환경에서는 __dirname 대신 이렇게 세팅
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
