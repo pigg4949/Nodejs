@@ -1,5 +1,6 @@
 import express from "express";
 import authRouter from "./router/HW_auth.mjs";
+import postsRouter from "./router/HW_posts.mjs";
 import { config } from "./HW_config.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -15,6 +16,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
 app.use("/auth", authRouter);
+app.use("/posts", postsRouter);
 
 // 없는 라우터 처리
 app.use((req, res, next) => {

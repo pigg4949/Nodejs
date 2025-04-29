@@ -24,12 +24,9 @@ export async function signup(req, res, next) {
   }
 
   const hashed = bcrypt.hashSync(password, bcryptSaltRounds);
-
   const users = await authRepository.createUser(userid, hashed, name, email);
-  const token = await createJwtToken(users.id);
-  console.log(token);
   if (users) {
-    res.status(201).json({ token, userid });
+    res.status(201).json({ message: "회원가입 완료", userid });
   }
 }
 
