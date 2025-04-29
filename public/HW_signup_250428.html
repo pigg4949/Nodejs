@@ -57,7 +57,8 @@
 
             if (response.ok) {
               alert("회원가입 성공: " + data.message);
-              // window.location.href = '/auth/login'; // (성공하면 로그인 페이지 이동 가능)
+              // (성공하면 로그인 페이지 이동 가능)
+              window.location.href = "http://127.0.0.1:8080/auth/login";
             } else {
               alert("회원가입 실패: " + data.message);
             }

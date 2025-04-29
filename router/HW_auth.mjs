@@ -20,19 +20,26 @@ router.get("/signup", (req, res) => {
   res.sendFile(path.join(publicPath, "HW_signup_250428.html"));
 });
 
+// 브라우저에서 http://127.0.0.1:8080/auth/login 요청 시 HTML 파일을 응답
+router.get("/login", (req, res) => {
+  res.sendFile(path.join(publicPath, "HW_login_250428.html"));
+});
+
 const validateLogin = [
   body("userid")
     .trim()
     .isLength({ min: 4 })
     .withMessage("최소 4자 이상 입력")
-    .matches(/^[A-Za-z0-9]*$/)
+    .matches(/^[A-Za-z0-9]{4,20}$/)
     .withMessage("특수문자는 사용 불가"),
 
   body("password")
     .trim()
     .isLength({ min: 8 })
     .withMessage("최소 8자 이상 입력")
-    .matches(/^/),
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/
+    ),
 
   validate,
 ];
