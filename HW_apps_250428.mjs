@@ -4,20 +4,16 @@ import postsRouter from "./router/HW_posts.mjs";
 import { config } from "./HW_config.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors";
 
 const app = express();
-
-// CORS 허용 설정
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
 
 // ESM 환경에서는 __dirname 대신 이렇게 세팅
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// CORS 허용 설정
+app.use(cors());
 
 // 정적 파일 서빙 (public 폴더)
 app.use(express.static(path.join(__dirname, "public")));
@@ -29,9 +25,12 @@ app.use("/posts", postsRouter);
 // 없는 라우터 처리
 app.use((req, res, next) => {
   res.sendStatus(404);
+  console.log("없는 라우터로부터의 접근입니다.");
 });
 
-const PORT = process.env.PORT || config.host.port;
-app.listen(PORT, () => {
-  console.log(`서버 실행 중: ${PORT} 포트`);
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "HW_signup_250428.html"));
 });
+
+const PORT = config.host.port;
+app.listen(PORT);

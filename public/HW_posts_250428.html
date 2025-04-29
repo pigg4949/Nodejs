@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>게시판</title>
@@ -11,6 +11,8 @@
     <script>
       async function fetchPosts() {
         const token = localStorage.getItem("token");
+        console.log("fetchPosts 함수 시작");
+        console.log("토큰 확인:", localStorage.getItem("token"));
 
         // 토큰이 없으면 로그인 페이지로 이동
         if (!token) {
@@ -20,9 +22,10 @@
         }
 
         try {
+          console.log(token);
           const response = await fetch("/posts", {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: "Bearer " + token,
             },
           });
 
@@ -47,8 +50,7 @@
             li.innerHTML = `
     <img src="${post.url}" alt="${post.name}" width="50" style="vertical-align: middle; border-radius: 50%;" />
     <strong>${post.name}</strong> (@${post.userid})<br/>
-    ${post.text}
-  `;
+    ${post.text}`;
             list.appendChild(li);
           });
         } catch (err) {
