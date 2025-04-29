@@ -23,4 +23,6 @@ app.use((req, res, next) => {
   res.sendStatus(404);
 });
 
-app.listen(config.host.port);
+app.listen(config.host.port, () => {
+  console.log("서버 실행중");
+});
