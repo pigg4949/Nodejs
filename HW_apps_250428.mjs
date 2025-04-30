@@ -1,7 +1,6 @@
 import express from "express";
 import authRouter from "./router/HW_auth.mjs";
 import postsRouter from "./router/HW_posts.mjs";
-import { config } from "./HW_config.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
@@ -31,7 +30,7 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "HW_signup_250428.html"));
 });
 
-const PORT = process.env.PORT || config.env.HOST_PORT || 8080;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
