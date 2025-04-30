@@ -24,13 +24,14 @@ app.use("/posts", postsRouter);
 
 // 없는 라우터 처리
 app.use((req, res, next) => {
-  res.sendStatus(404);
-  console.log("없는 라우터로부터의 접근입니다.");
+  res.sendStatus(404).json("없는 라우터로부터의 접근입니다.");
 });
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "HW_signup_250428.html"));
 });
 
-const PORT = config.host.port;
-app.listen(PORT);
+const PORT = process.env.PORT || config.env.HOST_PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
