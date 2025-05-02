@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>나의 TODO 리스트</title>
+  </head>
+  <body>
+    <h2>나의 TODO 리스트</h2>
+
+    <!-- 검색 -->
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="키워드 입력 예: 과제, 운동 등"
+    />
+    <button id="searchBtn">검색</button>
+    <button id="allBtn">모두보기</button>
+
+    <!-- 할 일 입력 -->
+    <form id="todoForm">
+      <input type="text" name="content" placeholder="할 일 내용" required />
+      <input type="date" name="deadline" required />
+      <button type="submit">추가</button>
+    </form>
+
+    <!-- 리스트 출력 -->
+    <ul id="todoList"></ul>
+
+    <!-- 로그아웃 -->
+    <button id="logoutBtn">로그아웃</button>
+
+    <script type="module">
+      const token = localStorage.getItem("token");
+      const userid = localStorage.getItem("userid");
+
+      if (!token || !userid) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/login.html";
+      }
+
+      const logoutBtn = document.getElementById("logoutBtn");
+      logoutBtn.addEventListener("click", () => {
+        localStorage.clear();
+        alert("로그아웃 되었습니다.");
+        window.location.href = "/login.html";
+      });
+
+      const todoList = document.getElementById("todoList");
+      const form = document.getElementById("todoForm");
+      const allBtn = document.getElementById("allBtn");
+      const searchInput = document.getElementById("searchInput");
+      const searchBtn = document.getElementById("searchBtn");
+
+      // 공통 출력 함수
+      function renderTodoList(todos) {
+        todoList.innerHTML = "";
+        todos.forEach((todo) => {
+          const deadlineDate = todo.deadline?.split("T")[0];
+          const postDate = todo.postdate?.split("T")[0];
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <strong>할 일:</strong> ${todo.content} - ${postDate}부터 ${deadlineDate}까지
+            <button data-id="${todo.no}" class="edit">수정</button>
+            <button data-id="${todo.no}" class="delete">삭제</button>
+          `;
+          todoList.appendChild(li);
+        });
+      }
+
+      // 전체 목록 조회
+      async function loadTodos() {
+        const res = await fetch("/api/posts", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.status === 403) {
+          alert("토큰이 만료되었습니다.");
+          localStorage.clear();
+          window.location.href = "/login.html";
+          return;
+        }
+
+        const todos = await res.json();
+        renderTodoList(todos);
+      }
+
+      allBtn.addEventListener("click", loadTodos);
+
+      // 할 일 추가
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        data.userid = userid;
+        data.postdate = new Date().toISOString().split("T")[0];
+
+        const res = await fetch("/api/posts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (res.status === 403) {
+          alert("토큰이 만료되었습니다.");
+          localStorage.clear();
+          window.location.href = "/login.html";
+          return;
+        }
+
+        form.reset();
+        loadTodos();
+      });
+
+      // 수정 및 삭제
+      todoList.addEventListener("click", async (e) => {
+        const id = e.target.dataset.id;
+
+        if (e.target.classList.contains("delete")) {
+          const res = await fetch(`/api/posts/${id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ userid }),
+          });
+
+          if (res.status === 403) {
+            alert("토큰이 만료되었습니다.");
+            localStorage.clear();
+            window.location.href = "/login.html";
+            return;
+          }
+
+          loadTodos();
+        } else if (e.target.classList.contains("edit")) {
+          const newContent = prompt("새 할 일 내용을 입력하세요:");
+          const newDeadline = prompt("새 마감일 (YYYY-MM-DD):");
+
+          if (!newContent || !newDeadline) return;
+
+          const res = await fetch(`/api/posts/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              userid,
+              content: newContent,
+              deadline: newDeadline,
+            }),
+          });
+
+          if (res.status === 403) {
+            alert("토큰이 만료되었습니다.");
+            localStorage.clear();
+            window.location.href = "/login.html";
+            return;
+          }
+
+          loadTodos();
+        }
+      });
+
+      // 검색 기능
+      searchBtn.addEventListener("click", async () => {
+        const keyword = searchInput.value.trim();
+        if (!keyword) {
+          loadTodos();
+          return;
+        }
+
+        const res = await fetch(
+          `/api/posts/search?userid=${userid}&keyword=${keyword}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (res.status === 403) {
+          alert("토큰이 만료되었습니다.");
+          localStorage.clear();
+          window.location.href = "/login.html";
+          return;
+        }
+
+        const todos = await res.json();
+        renderTodoList(todos);
+      });
+
+      // 초기 로딩
+      loadTodos();
+    </script>
+  </body>
+</html>
