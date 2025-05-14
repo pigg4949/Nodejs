@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 
-// 🔥 public 폴더를 정적 웹 폴더로 지정
+// public 폴더를 정적 웹 폴더로 지정
 app.use(express.static(path.join(__dirname, "public")));
 
 // API 라우터 연결
